@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#080e19" />
+<meta name="description" content="XAU Chart Studio — chart XAUUSD dengan drawing tools custom, workspace dan live market API." />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+<title>XAU Chart Studio — Gold Analysis</title>
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div id="app" class="app-shell">
+  <aside class="sidebar">
+    <div class="brand-mark" title="XAU Chart Studio"><span>✳</span></div>
+    <div class="sidebar-nav">
+      <button class="nav-icon active" data-open="chart" title="Chart" aria-label="Chart"><span data-icon="chart"></span></button>
+      <button class="nav-icon" data-open="workspaces" title="Workspace" aria-label="Workspace"><span data-icon="layers"></span></button>
+      <button class="nav-icon" data-open="settings" title="Pengaturan" aria-label="Pengaturan"><span data-icon="settings"></span></button>
+    </div>
+    <div class="sidebar-bottom"><button class="nav-icon" data-action="help" title="Panduan" aria-label="Panduan"><span data-icon="help"></span></button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="identity"><div class="brand-desktop">XAU<span>CHART</span><span class="brand-pill">STUDIO</span></div><div class="subtitle">PRECISION DRAWING TERMINAL</div></div>
+      <div class="top-actions">
+        <div class="source-status" id="sourceStatus"><span class="dot amber"></span><span id="sourceText">Menghubungkan data...</span></div>
+        <button class="ghost-btn outlined" data-open="settings"><span data-icon="sliders"></span><span class="desktop-label">Data & Setelan</span></button>
+        <button class="icon-btn" data-action="fullscreen" title="Fullscreen"><span data-icon="expand"></span></button>
+      </div>
+    </header>
+    <div class="workspace">
+      <div class="market-bar">
+        <div class="symbol-block"><div class="symbol-badge">Au</div><div><div class="symbol">XAU<span>/</span>USD <span class="symbol-chevron">⌄</span></div><div class="symbol-desc">GOLD · US DOLLAR</div></div></div>
+        <div class="market-price"><strong id="livePrice">—</strong><span id="liveChange" class="small-muted">Menunggu harga</span></div>
+        <div class="market-bar-right"><span id="clock" class="clock">--:--:-- WIB</span><span class="divider-vertical"></span><button class="ghost-btn" data-action="snapshot"><span data-icon="camera"></span><span class="desktop-label">Screenshot</span></button><button class="ghost-btn" data-open="workspaces"><span data-icon="bookmark"></span><span class="desktop-label">Workspace</span></button></div>
+      </div>
+      <div class="chart-toolbar"><div class="tf-wrap"><span class="toolbar-label">TIMEFRAME</span><div class="timeframes" id="timeframes"></div></div><div class="toolbar-right"><button class="small-btn" data-action="undo" title="Undo"><span data-icon="undo"></span></button><button class="small-btn" data-action="redo" title="Redo"><span data-icon="redo"></span></button><span class="divider-vertical"></span><button class="small-btn" data-action="fit" title="Sesuaikan chart"><span data-icon="fit"></span></button><button class="small-btn" data-action="clear" title="Hapus semua gambar"><span data-icon="trash"></span></button></div></div>
+      <section class="chart-section" id="chartSection" aria-label="Grafik candlestick dan drawing tools">
+        <div class="chart-header-floating"><div><span class="chart-floating-title">XAUUSD</span><span class="chart-floating-divider">·</span><span id="chartFrameLabel">M5</span><span class="chart-floating-divider">·</span><span id="chartSourceName">DEMO</span></div><div id="chartInfo">O — H — L — C —</div></div>
+        <div class="canvas-holder" id="canvasHolder">
+          <canvas id="chartCanvas" aria-label="Candlestick chart"></canvas>
+          <canvas id="drawingCanvas" aria-label="Area menggambar dan mengedit analisis"></canvas>
+          <div class="watermark" id="demoWatermark">DEMO DATA <small>Harga & candle simulasi</small></div>
+          <div class="loading-overlay hidden" id="chartLoading"><div class="loader"></div><span>Memuat candle...</span></div>
+          <div class="chart-empty hidden" id="chartEmpty"><span data-icon="wifi-off"></span><strong>Riwayat candle belum tersedia</strong><p>Hubungkan API Twelve Data untuk melihat chart XAUUSD asli pada timeframe ini, atau gunakan mode demo.</p><button class="primary-btn" data-open="settings">Konfigurasi data</button><button class="text-btn" data-action="demo">Coba mode demo</button></div>
+        </div>
+        <div class="drawing-bar" id="drawingBar" aria-label="Toolbar alat gambar"><div class="drawing-bar-heading">DRAW</div><div id="drawingButtons" class="drawing-buttons"></div><div class="drawing-bar-divider"></div><button class="drawing-icon" data-action="flip" title="Pindahkan toolbar kiri/kanan"><span data-icon="flip"></span></button></div>
+        <div class="floating-bottom-left"><span class="sync-label" id="syncLabel"><span class="dot amber"></span> Menyiapkan chart</span></div>
+        <div class="floating-bottom-right"><button class="zoom-button" data-action="zoomIn" title="Zoom in">+</button><button class="zoom-button" data-action="zoomOut" title="Zoom out">−</button><button class="zoom-button" data-action="latest" title="Ke candle terbaru"><span data-icon="locate"></span></button></div>
+        <div class="path-finish hidden" id="pathFinish"><span>Tap untuk menambah titik jalur</span><button class="primary-btn" data-action="finishPath">Selesaikan Jalur</button><button class="text-btn" data-action="cancelPath">Batal</button></div>
+        <div class="chart-footer"><div id="hint">Pilih tool gambar lalu tarik pada chart</div><div class="chart-footer-right"><span id="countObjects">0 objek</span><span class="sep">•</span><span id="saveStatus">Tersimpan lokal</span></div></div>
+      </section>
+      <div class="bottom-strip"><span class="bottom-warning"><span class="dot blue"></span> <span id="footerSource">XAUUSD · Drawing workspace</span></span><span>NO ORDER EXECUTION</span></div>
+    </div>
+  </main>
+  <aside class="inspector hidden" id="inspector"><div class="inspector-head"><div><div class="small-kicker">OBJECT INSPECTOR</div><h3 id="inspectorTitle">Pengaturan drawing</h3></div><button class="icon-btn" data-action="closeInspector" title="Tutup"><span data-icon="x"></span></button></div>
+    <div class="inspector-content"><label>Warna</label><div class="color-palette" id="colorPalette"></div><label>Warna custom</label><input type="color" id="customColor" value="#4a9dff" /><label>Model garis</label><div class="style-segments" id="lineStyles"><button data-line-style="solid">────</button><button data-line-style="dashed">─ ─ ─</button><button data-line-style="dotted">· · · ·</button></div><label>Ketebalan <span id="widthLabel">2px</span></label><input type="range" id="strokeWidth" min="1" max="8" value="2" /><label>Transparansi isi <span id="fillLabel">14%</span></label><input type="range" id="fillOpacity" min="0" max="80" value="14" /><div class="prop-info" id="objectMetrics"></div><div class="inspector-actions"><button class="ghost-btn" data-action="duplicate"><span data-icon="copy"></span> Duplikat</button><button class="ghost-btn" data-action="lock"><span data-icon="lock"></span> <span id="lockLabel">Kunci</span></button><button class="danger-btn" data-action="delete"><span data-icon="trash"></span> Hapus</button></div></div>
+  </aside>
+  <nav class="bottom-nav"><button class="active" data-open="chart"><span data-icon="chart"></span>Chart</button><button data-open="tools"><span data-icon="pencil"></span>Tools</button><button data-open="workspaces"><span data-icon="layers"></span>Workspace</button><button data-open="settings"><span data-icon="settings"></span>Setelan</button></nav>
+</div>
+<div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal"><div class="modal-head"><div><div class="small-kicker" id="modalKicker">XAU CHART STUDIO</div><h2 id="modalTitle">Pengaturan</h2></div><button class="icon-btn" data-action="closeModal"><span data-icon="x"></span></button></div><div id="modalBody" class="modal-body"></div></div></div>
+<div class="toast-zone" id="toastZone"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>
