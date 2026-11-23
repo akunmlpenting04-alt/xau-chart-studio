@@ -29,7 +29,8 @@ jobs:
           "$SDKMGR" --version
 
       - name: Install Android 35
-        run: |\n          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
+        run: |
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
