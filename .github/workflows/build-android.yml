@@ -40,7 +40,7 @@ jobs:
       - name: Copy web app into Android assets
         shell: bash
         run: |
-          mkdir -p android-app/app/src/main/assets
+          mkdir -p android-app/app/src/main/assets android-app/app/src/main/res/drawable
           cp index.html app.js styles.css sw.js manifest.webmanifest android-app/app/src/main/assets/
           cp -R assets android-app/app/src/main/assets/
           cp assets/icon-192.png android-app/app/src/main/res/drawable/app_icon.png
