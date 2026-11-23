@@ -4,6 +4,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: android-apk-main
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -45,6 +49,9 @@ jobs:
           cp -R assets android-app/app/src/main/assets/
           cp assets/icon-192.png android-app/app/src/main/res/drawable/app_icon.png
           sed -i 's|href="/styles.css"|href="styles.css"|g; s|src="/app.js"|src="app.js"|g; s|href="/manifest.webmanifest"|href="manifest.webmanifest"|g; s|href="/assets/icon.svg"|href="assets/icon.svg"|g' android-app/app/src/main/assets/index.html
+
+      - name: Validate chart JavaScript
+        run: node --check app.js
 
       - name: Compile installable debug APK
         run: gradle -p android-app :app:assembleDebug --no-daemon --stacktrace
