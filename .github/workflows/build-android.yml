@@ -50,8 +50,11 @@ jobs:
           cp assets/icon-192.png android-app/app/src/main/res/drawable/app_icon.png
           sed -i 's|href="/styles.css"|href="styles.css"|g; s|src="/app.js"|src="app.js"|g; s|href="/manifest.webmanifest"|href="manifest.webmanifest"|g; s|href="/assets/icon.svg"|href="assets/icon.svg"|g' android-app/app/src/main/assets/index.html
 
-      - name: Validate chart JavaScript
-        run: node --check app.js
+      - name: Validate chart + Netlify backend
+        run: |
+          node --check app.js
+          node --check netlify/functions/candles.js
+          node tests/candles.test.cjs
 
       - name: Compile installable debug APK
         run: gradle -p android-app :app:assembleDebug --no-daemon --stacktrace
@@ -69,10 +72,10 @@ jobs:
         shell: bash
         run: |
           FILE="android-app/app/build/outputs/apk/debug/app-debug.apk"
-          if gh release view v1.1.0 >/dev/null 2>&1; then
-            gh release upload v1.1.0 "$FILE#XAU-Chart-Studio.apk" --clobber
+          if gh release view v1.2.0 >/dev/null 2>&1; then
+            gh release upload v1.2.0 "$FILE#XAU-Chart-Studio.apk" --clobber
           else
-            gh release create v1.1.0 "$FILE#XAU-Chart-Studio.apk" \
-              --title "XAU Chart Studio v1.1.0 (APK Uji Coba)" \
-              --notes "APK Android instal langsung. Drawing tools lengkap, simpan lokal, dan mode DEMO. Candle XAUUSD asli via Twelve Data: buka Setelan, tempel API key pribadi, Simpan API Key, lalu Hubungkan. Key terenkripsi pada Android Keystore, tidak ada di APK atau GitHub. Ketersediaan data tergantung paket dan kuota Twelve Data. Build debug-signed untuk pengujian pribadi."
+            gh release create v1.2.0 "$FILE#XAU-Chart-Studio.apk" \
+              --title "XAU Chart Studio v1.2.0 (APK Uji Coba)" \
+              --notes "APK Android untuk pengujian pribadi. Data XAU/USD asli menggunakan Netlify Functions dan Twelve Data. Atur TWELVE_DATA_API_KEY dan XAU_APP_ACCESS_TOKEN di Netlify, lalu pada APK isi URL Netlify serta kode akses aplikasi. API key Twelve Data TIDAK disimpan dalam APK ataupun GitHub. Mode DEMO tetap tersedia."
           fi

@@ -1,11 +1,15 @@
-# APK XAU Chart Studio (Android)
+# XAU Chart Studio — Android v1.2.0
 
-Sumber Android berada di folder `android-app/`. Proyek ini menggunakan Android WebView + androidx.webkit.WebViewAssetLoader. Kode web chart asli dikemas sebagai asset APK, sehingga tampilan dan drawing tools bisa digunakan tanpa membuka browser.
+Source berada di `android-app/`. GitHub Actions otomatis menghasilkan APK bertanda tangan debug untuk pengujian pribadi dan menerbitkan file pada **Releases**.
 
-Setiap push ke `main` menjalankan GitHub Actions → Build Android APK. Hasil uji (debug-signed) tersedia di tab **Actions**, dan versi v1.1.0 disalin ke **Releases** sebagai `XAU-Chart-Studio.apk`.
+## Mengaktifkan XAU/USD real candles
+1. Deploy GitHub repo `akunmlpenting04-alt/xau-chart-studio` di Netlify.
+2. Simpan environment variables **TWELVE_DATA_API_KEY** dan **XAU_APP_ACCESS_TOKEN** (scope Functions); jangan masukkan API key Twelve Data ke APK atau repository.
+3. APK → Data & Setelan → **URL Situs Netlify**: `https://nama-situs.netlify.app` → **Kode Akses Aplikasi**: nilai XAU_APP_ACCESS_TOKEN → **Simpan Koneksi** → **Mode Market Asli → Hubungkan**.
+4. Tunggu request OHLC; aplikasi tetap memberi label DEMO bila memakai candle simulasi, dan menampilkan kesalahan koneksi jika API live gagal.
 
-Fitur: 6 drawing tools, timeframe, workspace, penyimpanan lokal dan quote spot online (jika API bisa dijangkau).
+API key Twelve Data hanya dipakai di Netlify Functions. Kode akses aplikasi (terpisah dari API key) disimpan lokal dalam WebView localStorage agar request berikutnya bisa jalan. Kode akses dapat dicabut dari Netlify.
 
-**Data candle:** Mode DEMO menggunakan data simulasi dan diberi label demo. Untuk mode LIVE di APK v1.1: buka Setelan → API Key Twelve Data → tempel key pribadi → Simpan API Key → Hubungkan. Key disimpan secara terenkripsi menggunakan Android Keystore, tidak disertakan dalam APK maupun GitHub dan dikirim langsung dari perangkat ke Twelve Data melalui HTTPS Authorization header. Koneksi online dan paket Twelve Data dengan izin akses XAU/USD diperlukan. Polling sekitar 2 menit menghemat kuota Basic; bukan streaming tick-by-tick. Jangan bagikan key atau unggah key ke repository publik.
+Jangan lupa **rotasi API key lama** yang pernah dibagikan dalam chat.
 
-**Catatan:** APK ini bertanda tangan debug untuk instalasi pribadi, bukan distribusi Play Store. Untuk distribusi produksi gunakan release keystore yang disimpan aman dan review privacy/security. Pada beberapa WebView, unduh screenshot dengan blob URL belum didukung meskipun drawing dan penyimpanan tetap berjalan.
+**Keterbatasan:** data real membutuhkan izin XAU/USD di paket Twelve Data, koneksi internet dan kuota cukup. App bukan eksekutor order, tidak tick-by-tick, dan belum diuji produksi pada semua perangkat. APK memakai debug signature dan tidak ditujukan untuk Play Store.

@@ -12,19 +12,21 @@ python -m http.server 8080
 
 Buka `http://localhost:8080`. **Mode DEMO** langsung berfungsi dan menampilkan candle simulasi ber-watermark, supaya alat gambar dapat dicoba tanpa API. Header berusaha mengambil harga spot XAU dari https://api.gold-api.com/price/XAU (harga asli, diperbarui penyedia sekitar 30 detik; header terpisah dari candle demo).
 
-## Deploy ke Netlify — cara paling mudah supaya candle market asli aktif
+## Deploy Netlify + akses aman dari website dan APK
 
-1. Upload folder **XAU-Chart-Studio** ke repo GitHub (isi folder sebagai root repo).
-2. Netlify → Add new site → Import from Git → pilih repo ini. Build command: **kosong**; Publish directory: **.**. Konfigurasi `netlify.toml` sudah tersedia.
-3. Buat API key di https://twelvedata.com/ dan pastikan paket mengizinkan **XAU/USD** dan interval yang digunakan.
-4. Di Netlify → Site configuration → Environment variables → Add variable:
-   - Key: `TWELVE_DATA_API_KEY`
-   - Value: key Twelve Data milikmu (jangan taruh di kode/commit Git).
-5. Deploy ulang situs agar Netlify Function dapat membaca variabel.
-6. Buka situs, Pengaturan → **Mode Market Asli** → Hubungkan.
-7. Pilih timeframe; chart memakai historical OHLC Twelve Data dan refresh berkala ~65 detik (tergantung paket). Status dan error ditampilkan eksplisit.
+1. Buka Netlify → **Add new project** → **Import from Git** → pilih `akunmlpenting04-alt/xau-chart-studio`.
+2. Build command **kosong**, Publish directory **.**. Netlify membaca `netlify.toml` dan memasang Function `netlify/functions/candles.js`.
+3. Di dashboard Netlify → **Project configuration → Environment variables**, tambahkan kedua variabel berikut pada scope **Functions** (atau All):
+   - `TWELVE_DATA_API_KEY`: API key Twelve Data baru. Rotasi key lama yang terlanjur terkirim melalui chat. **Jangan tempel key ini ke GitHub atau APK.**
+   - `XAU_APP_ACCESS_TOKEN`: buat kode akses acak minimal 16 karakter yang **berbeda** dari API key Twelve Data. Simpan secara pribadi.
+4. Netlify → **Deploys → Trigger deploy** untuk memastikan Functions menerima variabel baru. Variable dalam `netlify.toml` tidak dibaca oleh Functions.
+5. Di **website Netlify**, buka Data & Pengaturan → masukkan kode akses aplikasi → **Simpan Koneksi** → **Hubungkan**.
+6. Di **APK Android v1.2.0**, buka Data & Pengaturan → masukkan URL Netlify (contoh `https://nama-situs.netlify.app`) dan kode akses yang sama → **Simpan Koneksi** → **Hubungkan**.
+7. Jika berhasil, chart menampilkan candle XAU/USD dari Twelve Data (polling setiap ~65 detik di web, ~120 detik di APK). Bukan streaming tick.
 
-**Penting:** Serverless function `/api/candles` hanya menerima simbol tetap XAU/USD dan timeframe valid, tetapi endpoint publik dapat dipanggil pengunjung. Untuk situs publik dengan trafik tinggi tambahkan autentikasi, edge cache, pembatasan request, dan cek ketentuan lisensi redistribusi data Twelve Data. Limit akun Twelve Data tetap berlaku; ini bukan tick-by-tick feed (kecuali dikembangkan dengan WebSocket yang didukung paket API).
+**Menguji endpoint:** `https://nama-situs.netlify.app/api/candles?tf=M5` akan mengembalikan HTTP 401 jika variabel lengkap tetapi kode akses tidak dikirim. Itu **normal**. HTTP 503 artinya konfigurasi variabel belum selesai. Candle live memerlukan paket Twelve Data dengan hak akses XAU/USD.
+
+**Keamanan dan kuota:** kunci Twelve Data hanya berada di Netlify. Kode akses aplikasi dikirim via header HTTPS `X-XAU-Access-Token` dan disimpan dalam localStorage di perangkat; jangan menyamakannya dengan penyimpanan rahasia berstandar tinggi. Endpoint backend membatasi simbol/timeframe, memeriksa kode akses, membatasi CORS untuk origin APK dan Netlify yang sesuai, serta cache sementara per instance. Penggunaan publik besar tetap memerlukan rate limiting terpusat dan monitoring kuota.
 
 ## Deploy statis tanpa serverless (GitHub Pages, Cloudflare Pages static, dll.)
 
