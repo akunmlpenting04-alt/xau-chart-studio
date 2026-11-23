@@ -62,10 +62,10 @@ jobs:
         shell: bash
         run: |
           FILE="android-app/app/build/outputs/apk/debug/app-debug.apk"
-          if gh release view v1.0.0 >/dev/null 2>&1; then
-            gh release upload v1.0.0 "$FILE#XAU-Chart-Studio.apk" --clobber
+          if gh release view v1.1.0 >/dev/null 2>&1; then
+            gh release upload v1.1.0 "$FILE#XAU-Chart-Studio.apk" --clobber
           else
-            gh release create v1.0.0 "$FILE#XAU-Chart-Studio.apk" \
-              --title "XAU Chart Studio v1.0.0 (APK Uji Coba)" \
-              --notes "APK Android instal langsung. Drawing tools lengkap, simpan lokal, data candle DEMO. Harga spot online jika Gold API tersedia. Mode candle XAUUSD pasar asli perlu backend Netlify dengan Twelve Data. Build debug-signed untuk pengujian pribadi."
+            gh release create v1.1.0 "$FILE#XAU-Chart-Studio.apk" \
+              --title "XAU Chart Studio v1.1.0 (APK Uji Coba)" \
+              --notes "APK Android instal langsung. Drawing tools lengkap, simpan lokal, dan mode DEMO. Candle XAUUSD asli via Twelve Data: buka Setelan, tempel API key pribadi, Simpan API Key, lalu Hubungkan. Key terenkripsi pada Android Keystore, tidak ada di APK atau GitHub. Ketersediaan data tergantung paket dan kuota Twelve Data. Build debug-signed untuk pengujian pribadi."
           fi
